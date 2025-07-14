@@ -4,8 +4,8 @@ import pandas as pd
 import os
 
 # === Environment Variables ===
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TELEGRAM_TOKEN = os.getenv("8032193032:AAHH8Hi2CjvQdpe3lAfOb2b0iN5rAiPX8wo")
+TELEGRAM_CHAT_ID = os.getenv("7356643408")
 BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
 BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
 
