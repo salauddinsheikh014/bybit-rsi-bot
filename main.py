@@ -52,7 +52,7 @@ async def fetch_kline(session, symbol):
     return symbol, pd.Series(dtype=float)
 
 async def startup_report():
-    msg = "🤖 RSI Bot Started:
+    msg = "🤖 RSI Bot Started:\n"
 "
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_kline(session, s) for s in SYMBOLS]
