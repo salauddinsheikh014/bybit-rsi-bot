@@ -1,24 +1,23 @@
 import asyncio
 import aiohttp
 import pandas as pd
-import os
 
-# === Environment Variables ===
-TELEGRAM_TOKEN = os.getenv("8032193032:AAHH8Hi2CjvQdpe3lAfOb2b0iN5rAiPX8wo")
-TELEGRAM_CHAT_ID = os.getenv("7356643408")
-BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
-BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
+# === Direct Configuration (use with caution) ===
+TELEGRAM_TOKEN = "8032193032:AAHH8Hi2CjvQdpe3lAfOb2b0iN5rAiPX8wo"
+TELEGRAM_CHAT_ID = "7356643408"
+BYBIT_API_KEY = "McBIskuBcZDHYH1G0J"
+BYBIT_API_SECRET = "My4U8jfqafyJa5gfgBr6U3sQck7KjRxwdDEV"
 
 # === Settings ===
 SYMBOLS = ["DOGEUSDT", "PEPEUSDT", "BONKUSDT", "WIFUSDT", "SHIBUSDT", "FLOKIUSDT", "ELONUSDT"]
 RSI_PERIOD = 6
 RSI_THRESHOLD = 35
-INTERVAL = "240"  # 4h candle
+INTERVAL = "240"  # 4H candles
 LIMIT = 100
 CHECK_INTERVAL = 15  # seconds
 alert_sent = {symbol: False for symbol in SYMBOLS}
 
-# === Telegram Send ===
+# === Send Telegram Message ===
 async def send_telegram(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     async with aiohttp.ClientSession() as session:
@@ -36,7 +35,7 @@ def calculate_rsi(series: pd.Series, period: int = RSI_PERIOD):
     rsi = 100 - (100 / (1 + rs))
     return rsi.iloc[-1] if not rsi.empty else None
 
-# === Bybit Candle Fetch ===
+# === Fetch Klines from Bybit ===
 async def fetch_kline(session, symbol):
     url = "https://api.bybit.com/v5/market/kline"
     params = {
@@ -68,7 +67,7 @@ async def startup_report():
     msg += "\n⏳ Monitoring 4H RSI..."
     await send_telegram(msg)
 
-# === RSI Monitor Loop ===
+# === Monitor RSI Loop ===
 async def monitor_loop():
     while True:
         async with aiohttp.ClientSession() as session:
@@ -80,14 +79,14 @@ async def monitor_loop():
                     print(f"{symbol} - RSI: {rsi:.2f}")
                     if rsi < RSI_THRESHOLD and not alert_sent[symbol]:
                         await send_telegram(
-                            f"⚠️ RSI Alert!\nPair: {symbol}\nRSI({RSI_PERIOD}): {rsi:.2f}\nTimeframe: 4h"
+                            f"⚠️ RSI Alert!\nPair: {symbol}\nRSI({RSI_PERIOD}): {rsi:.2f}\nTimeframe: 4H"
                         )
                         alert_sent[symbol] = True
                     elif rsi >= RSI_THRESHOLD:
                         alert_sent[symbol] = False
         await asyncio.sleep(CHECK_INTERVAL)
 
-# === Entry Point ===
+# === Run Bot ===
 async def main():
     await startup_report()
     await monitor_loop()
